@@ -2,30 +2,19 @@ import UIKit
 import Flutter
 import AIHelpSupportSDK
 
-// 定义全局变量
+// Define global variables
 private var aiHelpAppId: String?
 private var userUcode: String?
 private var userNickname: String?
 
-// 定义 C 回调类型和回调函数
+// Define C callback type and callback function
 typealias AISupportInitCallback = @convention(c) (Bool, UnsafePointer<CChar>?) -> Void
 
+// Callback function to handle AIHelp SDK initialization
 private let callbackPointer: AISupportInitCallback = { isSuccess, message in
-    showQASection()
-}
-
-// 显示 QA 界面
-private func showQASection() {
-    let faqConfig = AIHelpApiConfigBuilder()
-    faqConfig.entranceId = "E001"
-    AIHelpSupportSDK.show(with: faqConfig.build())
-
-    guard let ucode = userUcode, let nickname = userNickname else { return }
-
-    let userConfig = AIHelpUserConfigBuilder()
-    userConfig.userId = ucode
-    userConfig.userName = nickname
-    AIHelpSupportSDK.updateUserInfo(userConfig.build())
+    DispatchQueue.main.async {
+        showQASection()
+    }
 }
 
 public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
@@ -37,8 +26,20 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard call.method == "showQA",
-              let arguments = call.arguments as? [String: Any],
+        switch call.method {
+        case "notifySetting":
+            openNotificationSettings()
+            result("notifySetting")
+        case "showQA":
+            handleShowQA(call: call, result: result)
+        default:
+            result(FlutterMethodNotImplemented)
+        }
+    }
+
+    // Handle showing the QA section
+    private func handleShowQA(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
               let domain = arguments["aiHelpDomain"] as? String,
               let appKey = arguments["aiHelpAppKey"] as? String,
               let appId = arguments["aiHelpAppId"] as? String,
@@ -48,20 +49,52 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        // 如果appId匹配，已经初始化过了，直接显示 QA 界面
+        // Check if appId is already initialized
         if appId == aiHelpAppId {
             showQASection()
             result("showQA")
             return
         }
-        // 更新全局变量并初始化 AIHelp SDK
+
+        // Update global variables and initialize the SDK
+        updateUserInformation(appId: appId, ucode: ucode, nickname: nickname)
+        initializeAIHelpSDK(appKey: appKey, domain: domain, appId: appId)
+        result("showQA")
+    }
+
+    // Update user information
+    private func updateUserInformation(appId: String, ucode: String, nickname: String) {
         aiHelpAppId = appId
         userUcode = ucode
         userNickname = nickname
+    }
 
+    // Initialize AIHelp SDK
+    private func initializeAIHelpSDK(appKey: String, domain: String, appId: String) {
         AIHelpSupportSDK.enableLogging(true)
         AIHelpSupportSDK.initWithApiKey(appKey, domainName: domain, appId: appId)
         AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
-        result("showQA")
+    }
+
+    // Show the QA section
+    private func showQASection() {
+        guard let ucode = userUcode, let nickname = userNickname else { return }
+
+        let faqConfig = AIHelpApiConfigBuilder()
+        faqConfig.entranceId = "E001"
+        AIHelpSupportSDK.show(with: faqConfig.build())
+
+        let userConfig = AIHelpUserConfigBuilder()
+        userConfig.userId = ucode
+        userConfig.userName = nickname
+        AIHelpSupportSDK.updateUserInfo(userConfig.build())
+    }
+
+    // Open notification settings
+    private func openNotificationSettings() {
+        guard let settingsUrl = URL(string: UIApplication.openSettingsURLString) else { return }
+        if UIApplication.shared.canOpenURL(settingsUrl) {
+            UIApplication.shared.open(settingsUrl)
+        }
     }
 }
