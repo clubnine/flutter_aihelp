@@ -5,20 +5,29 @@
 Pod::Spec.new do |s|
   s.name             = 'flutter_aihelp'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter plugin.'
+  s.summary          = 'A Flutter plugin to demonstrate Swift integration'
   s.description      = <<-DESC
-A new Flutter plugin.
+A new Flutter plugin written in Swift for iOS integration.
                        DESC
-  s.homepage         = 'http://example.com'
-  s.license          = { :file => '../LICENSE' }
+  s.homepage         = 'https://your-plugin-homepage.com'
+  s.license          = { :type => 'MIT', :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
-  s.dependency 'Flutter'
-  # s.dependency 'AIHelpSDK'
-  s.dependency 'AIHelpSDK', '= 4.3.10'
-  s.user_target_xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
-  s.static_framework = true
+  s.source_files     = 'Classes/**/*'
+
+  # 指定最低 iOS 版本
   s.ios.deployment_target = '12.0'
+
+  # 依赖 Flutter 框架
+  s.dependency 'Flutter'
+
+  # 如果需要第三方依赖，在这里声明
+  # 示例: 集成 AIHelpSDK
+  s.dependency 'AIHelpSDK', '= 4.3.10'
+
+  # 如果使用 Swift，需要指定 Swift 版本
+  s.swift_version = '5.0'
+
+  # Flutter 编译器自动生成的模块（必须包含）
+  s.static_framework = true
 end
