@@ -48,18 +48,18 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        // 如果域名匹配，直接显示 QA 界面
-        if domain == aiHelpAppId {
+        // 如果appId匹配，已经初始化过了，直接显示 QA 界面
+        if appId == aiHelpAppId {
             showQASection()
             result("showQA")
             return
         }
-
         // 更新全局变量并初始化 AIHelp SDK
-        aiHelpAppId = domain
+        aiHelpAppId = appId
         userUcode = ucode
         userNickname = nickname
 
+        AIHelpSupportSDK.enableLogging(true)
         AIHelpSupportSDK.initWithApiKey(appKey, domainName: domain, appId: appId)
         AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
         result("showQA")
