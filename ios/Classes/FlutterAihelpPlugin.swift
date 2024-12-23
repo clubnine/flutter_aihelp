@@ -17,6 +17,20 @@ private let callbackPointer: AISupportInitCallback = { isSuccess, message in
     }
 }
 
+// Show the QA section
+private func showQASection() {
+    guard let ucode = userUcode, let nickname = userNickname else { return }
+
+    let faqConfig = AIHelpApiConfigBuilder()
+    faqConfig.entranceId = "E001"
+    AIHelpSupportSDK.show(with: faqConfig.build())
+
+    let userConfig = AIHelpUserConfigBuilder()
+    userConfig.userId = ucode
+    userConfig.userName = nickname
+    AIHelpSupportSDK.updateUserInfo(userConfig.build())
+}
+
 public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
 
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -74,20 +88,6 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
         AIHelpSupportSDK.enableLogging(true)
         AIHelpSupportSDK.initWithApiKey(appKey, domainName: domain, appId: appId)
         AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
-    }
-
-    // Show the QA section
-    private func showQASection() {
-        guard let ucode = userUcode, let nickname = userNickname else { return }
-
-        let faqConfig = AIHelpApiConfigBuilder()
-        faqConfig.entranceId = "E001"
-        AIHelpSupportSDK.show(with: faqConfig.build())
-
-        let userConfig = AIHelpUserConfigBuilder()
-        userConfig.userId = ucode
-        userConfig.userName = nickname
-        AIHelpSupportSDK.updateUserInfo(userConfig.build())
     }
 
     // Open notification settings
