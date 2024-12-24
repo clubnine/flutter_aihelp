@@ -32,9 +32,9 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _flutterAihelpPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _flutterAihelpPlugin.openNotificationSettings() ?? 'Unknown platform openNotificationSettings';
     } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      platformVersion = 'Failed to get platform openNotificationSettings.';
     }
 
     // If the widget was removed from the tree while the asynchronous platform

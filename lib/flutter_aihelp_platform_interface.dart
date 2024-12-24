@@ -23,12 +23,12 @@ abstract class FlutterAihelpPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
-  Future<void> showQA(
+  Future<String?> showQA(
       String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) async {
     throw UnimplementedError('showQA() has not been implemented.');
+  }
+
+  Future<String?> openNotificationSettings() {
+    throw UnimplementedError('openNotificationSettings() has not been implemented.');
   }
 }

@@ -8,11 +8,11 @@
 import 'flutter_aihelp_platform_interface.dart';
 
 class FlutterAihelp {
-  Future<String?> getPlatformVersion() {
-    return FlutterAihelpPlatform.instance.getPlatformVersion();
+  Future<String?> showQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
+    return FlutterAihelpPlatform.instance.showQA(ucode, nickName, aiHelpDomain, aiHelpAppId, aiHelpAppKey);
   }
 
-  Future<void> showQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
-    return FlutterAihelpPlatform.instance.showQA(ucode, nickName, aiHelpDomain, aiHelpAppId, aiHelpAppKey);
+  Future<String?> openNotificationSettings() {
+    return FlutterAihelpPlatform.instance.openNotificationSettings();
   }
 }

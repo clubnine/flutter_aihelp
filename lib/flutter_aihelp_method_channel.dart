@@ -10,13 +10,7 @@ class MethodChannelFlutterAihelp extends FlutterAihelpPlatform {
   final methodChannel = const MethodChannel('flutter_aihelp');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
-  Future<void> showQA(
+  Future<String?> showQA(
       String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) async {
     return await methodChannel.invokeMethod('showQA', {
       'ucode': ucode,
@@ -25,5 +19,10 @@ class MethodChannelFlutterAihelp extends FlutterAihelpPlatform {
       'aiHelpAppId': aiHelpAppId,
       'aiHelpAppKey': aiHelpAppKey,
     });
+  }
+
+  @override
+  Future<String?> openNotificationSettings() async {
+    return await methodChannel.invokeMethod<String>('notifySetting');
   }
 }

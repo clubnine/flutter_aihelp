@@ -4,18 +4,14 @@ import 'package:flutter_aihelp/flutter_aihelp_platform_interface.dart';
 import 'package:flutter_aihelp/flutter_aihelp_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-class MockFlutterAihelpPlatform
-    with MockPlatformInterfaceMixin
-    implements FlutterAihelpPlatform {
-
+class MockFlutterAihelpPlatform with MockPlatformInterfaceMixin implements FlutterAihelpPlatform {
   @override
-  Future<String?> getPlatformVersion() => Future.value('42');
-
-  @override
-  Future<void> showQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
-    // TODO: implement showQA
-    throw UnimplementedError();
+  Future<String?> showQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
+    return Future.value('');
   }
+
+  @override
+  Future<String?> openNotificationSettings() => Future.value('');
 }
 
 void main() {
@@ -29,7 +25,5 @@ void main() {
     FlutterAihelp flutterAihelpPlugin = FlutterAihelp();
     MockFlutterAihelpPlatform fakePlatform = MockFlutterAihelpPlatform();
     FlutterAihelpPlatform.instance = fakePlatform;
-
-    expect(await flutterAihelpPlugin.getPlatformVersion(), '42');
   });
 }
