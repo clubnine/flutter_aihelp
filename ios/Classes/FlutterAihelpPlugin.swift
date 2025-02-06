@@ -34,7 +34,7 @@ private func showQASection() {
 
 
     let userBuilder: AIHelpUserConfigBuilder = AIHelpUserConfigBuilder.init()
-    userBuilder.userId = userUcode
+    userBuilder.userId = ucode
     userBuilder.userName = nickname
     AIHelpSupportSDK.updateUserInfo(userBuilder.build())
 }
