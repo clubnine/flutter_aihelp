@@ -21,14 +21,22 @@ private let callbackPointer: AISupportInitCallback = { isSuccess, message in
 private func showQASection() {
     guard let ucode = userUcode, let nickname = userNickname else { return }
 
-    let faqConfig = AIHelpApiConfigBuilder()
-    faqConfig.entranceId = "E001"
-    AIHelpSupportSDK.show(with: faqConfig.build())
+    let faqConversationConfigBuilder : AIHelpConversationConfigBuilder = AIHelpConversationConfigBuilder.init();
+    faqConversationConfigBuilder.conversationIntent = .botSupport
+    faqConversationConfigBuilder.alwaysShowHumanSupportButtonInBotPage = true
+    let faqConversationConfig:AIHelpConversationConfig = faqConversationConfigBuilder.build()
 
-    let userConfig = AIHelpUserConfigBuilder()
-    userConfig.userId = ucode
-    userConfig.userName = nickname
-    AIHelpSupportSDK.updateUserInfo(userConfig.build())
+    let faqConfig: AIHelpFAQConfigBuilder = AIHelpFAQConfigBuilder.init();
+    faqConfig.showConversationMoment = .always;
+    faqConfig.conversationConfig = faqConversationConfig
+    faqConfig.build()
+    AIHelpSupportSDK.showConversation(faqConversationConfig)
+
+
+    let userBuilder: AIHelpUserConfigBuilder = AIHelpUserConfigBuilder.init()
+    userBuilder.userId = _auvAiUcode
+    userBuilder.userName = _auvAiNickName
+    AIHelpSupportSDK.updateUserInfo(userBuilder.build())
 }
 
 public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
@@ -46,9 +54,28 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
             result("notifySetting")
         case "showQA":
             handleShowQA(call: call, result: result)
+        case "initQA":
+            initShowQA(call: call, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
+    }
+   // Handle showing the QA section
+    private func initShowQA(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        guard let arguments = call.arguments as? [String: Any],
+              let domain = arguments["aiHelpDomain"] as? String,
+              let appKey = arguments["aiHelpAppKey"] as? String,
+              let appId = arguments["aiHelpAppId"] as? String,
+              let ucode = arguments["ucode"] as? String,
+              let nickname = arguments["nickName"] as? String else {
+            result(FlutterMethodNotImplemented)
+            return
+        }
+
+        // Update global variables and initialize the SDK
+        updateUserInformation(appId: appId, ucode: ucode, nickname: nickname)
+        initializeAIHelpSDK(appKey: appKey, domain: domain, appId: appId)
+        result("initQA")
     }
 
     // Handle showing the QA section

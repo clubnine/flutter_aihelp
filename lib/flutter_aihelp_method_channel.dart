@@ -22,6 +22,18 @@ class MethodChannelFlutterAihelp extends FlutterAihelpPlatform {
   }
 
   @override
+  Future<String?> initQA(
+      String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) async {
+    return await methodChannel.invokeMethod('initQA', {
+      'ucode': ucode,
+      'nickName': nickName,
+      'aiHelpDomain': aiHelpDomain,
+      'aiHelpAppId': aiHelpAppId,
+      'aiHelpAppKey': aiHelpAppKey,
+    });
+  }
+
+  @override
   Future<String?> openNotificationSettings() async {
     return await methodChannel.invokeMethod<String>('notifySetting');
   }

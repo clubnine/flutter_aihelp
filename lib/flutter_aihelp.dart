@@ -12,6 +12,10 @@ class FlutterAihelp {
     return FlutterAihelpPlatform.instance.showQA(ucode, nickName, aiHelpDomain, aiHelpAppId, aiHelpAppKey);
   }
 
+  Future<String?> initQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
+    return FlutterAihelpPlatform.instance.initQA(ucode, nickName, aiHelpDomain, aiHelpAppId, aiHelpAppKey);
+  }
+
   Future<String?> openNotificationSettings() {
     return FlutterAihelpPlatform.instance.openNotificationSettings();
   }

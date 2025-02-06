@@ -12,6 +12,11 @@ class MockFlutterAihelpPlatform with MockPlatformInterfaceMixin implements Flutt
 
   @override
   Future<String?> openNotificationSettings() => Future.value('');
+
+  @override
+  Future<String?> initQA(String ucode, String nickName, String aiHelpDomain, String aiHelpAppId, String aiHelpAppKey) {
+    return Future.value('');
+  }
 }
 
 void main() {
