@@ -7,11 +7,18 @@ private var aiHelpAppId: String?
 private var userUcode: String?
 private var userNickname: String?
 
-// Define C callback type and callback function
-typealias AISupportInitCallback = @convention(c) (Bool, UnsafePointer<CChar>?) -> Void
+//// Define C callback type and callback function
+//typealias AISupportInitCallback = @convention(c) (Bool, UnsafePointer<CChar>?) -> Void
+//
+//// Callback function to handle AIHelp SDK initialization
+//private let callbackPointer: AISupportInitCallback = { isSuccess, message in
+//    DispatchQueue.main.async {
+//        showQASection()
+//    }
+//}
 
-// Callback function to handle AIHelp SDK initialization
-private let callbackPointer: AISupportInitCallback = { isSuccess, message in
+
+let callbackPointer: @convention(c) () -> Void = {
     DispatchQueue.main.async {
         showQASection()
     }
@@ -62,6 +69,8 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
     }
    // Handle showing the QA section
     private func initShowQA(call: FlutterMethodCall, result: @escaping FlutterResult) {
+
+        print("initShowQA")
         guard let arguments = call.arguments as? [String: Any],
               let domain = arguments["aiHelpDomain"] as? String,
               let appKey = arguments["aiHelpAppKey"] as? String,
@@ -100,6 +109,7 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
         // Update global variables and initialize the SDK
         updateUserInformation(appId: appId, ucode: ucode, nickname: nickname)
         initializeAIHelpSDK(appKey: appKey, domain: domain, appId: appId)
+        AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
         result("showQA")
     }
 
@@ -114,7 +124,6 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
     private func initializeAIHelpSDK(appKey: String, domain: String, appId: String) {
         AIHelpSupportSDK.enableLogging(true)
         AIHelpSupportSDK.initWithApiKey(appKey, domainName: domain, appId: appId)
-        AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
     }
 
     // Open notification settings
