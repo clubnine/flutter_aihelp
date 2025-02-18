@@ -7,38 +7,23 @@ private var aiHelpAppId: String?
 private var userUcode: String?
 private var userNickname: String?
 
-//// Define C callback type and callback function
-//typealias AISupportInitCallback = @convention(c) (Bool, UnsafePointer<CChar>?) -> Void
-//
-//// Callback function to handle AIHelp SDK initialization
-//private let callbackPointer: AISupportInitCallback = { isSuccess, message in
-//    DispatchQueue.main.async {
-//        showQASection()
-//    }
-//}
+// Define C callback type and callback function
+typealias AISupportInitCallback = @convention(c) (Bool, UnsafePointer<CChar>?) -> Void
 
-
-let callbackPointer: @convention(c) () -> Void = {
-    DispatchQueue.main.async {
-        showQASection()
-    }
+// Callback function to handle AIHelp SDK initialization
+private let callbackPointer: AISupportInitCallback = { isSuccess, message in
+   DispatchQueue.main.async {
+       showQASection()
+   }
 }
 
 // Show the QA section
 private func showQASection() {
     guard let ucode = userUcode, let nickname = userNickname else { return }
 
-    let faqConversationConfigBuilder : AIHelpConversationConfigBuilder = AIHelpConversationConfigBuilder.init();
-    faqConversationConfigBuilder.conversationIntent = .botSupport
-    faqConversationConfigBuilder.alwaysShowHumanSupportButtonInBotPage = true
-    let faqConversationConfig:AIHelpConversationConfig = faqConversationConfigBuilder.build()
-
-    let faqConfig: AIHelpFAQConfigBuilder = AIHelpFAQConfigBuilder.init();
-    faqConfig.showConversationMoment = .always;
-    faqConfig.conversationConfig = faqConversationConfig
-    faqConfig.build()
-    AIHelpSupportSDK.showConversation(faqConversationConfig)
-
+    let faqConversationConfig: AIHelpApiConfigBuilder  = AIHelpApiConfigBuilder.init()
+    faqConversationConfig.entranceId = "E001";
+    AIHelpSupportSDK.show(with: faqConversationConfig.build());
 
     let userBuilder: AIHelpUserConfigBuilder = AIHelpUserConfigBuilder.init()
     userBuilder.userId = ucode
@@ -109,7 +94,7 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
         // Update global variables and initialize the SDK
         updateUserInformation(appId: appId, ucode: ucode, nickname: nickname)
         initializeAIHelpSDK(appKey: appKey, domain: domain, appId: appId)
-        AIHelpSupportSDK.setOnInitializedCallback(callbackPointer)
+        AIHelpSupportSDK.setOnInitializedAsyncCallback(callbackPointer)
         result("showQA")
     }
 
@@ -122,6 +107,8 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
 
     // Initialize AIHelp SDK
     private func initializeAIHelpSDK(appKey: String, domain: String, appId: String) {
+        let language = Locale.preferredLanguages.first ?? "en"
+        AIHelpSupportSDK.updateLanguage(language)
         AIHelpSupportSDK.enableLogging(true)
         AIHelpSupportSDK.initWithApiKey(appKey, domainName: domain, appId: appId)
     }
@@ -134,3 +121,4 @@ public class FlutterAihelpPlugin: NSObject, FlutterPlugin {
         }
     }
 }
+

@@ -3,7 +3,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_aihelp'
-  s.version          = '0.0.6'
+  s.version          = '0.1.0'
   s.summary          = 'A new Flutter plugin.'
   s.description      = <<-DESC
 A new Flutter plugin.
@@ -15,7 +15,7 @@ A new Flutter plugin.
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
   # s.dependency 'AIHelpSDK'
-  s.dependency 'AIHelpSDK', '= 3.4.5'
+  s.dependency 'AIHelpSDK', '= 4.7.4'
   s.user_target_xcconfig = { 'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES' }
   s.static_framework = true
   s.ios.deployment_target = '12.0'
